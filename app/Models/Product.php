@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -14,4 +16,17 @@ class Product extends Model
         'stock',
         'rating',
     ];
+
+    protected $appends = ['image_url'];
+
+    protected $hidden = ['image'];
+
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->image 
+                ? Storage::url($this->image)
+                : null,
+        );
+    }
 }
